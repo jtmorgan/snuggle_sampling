@@ -21,7 +21,7 @@ import csv
 import data
 import MySQLdb
 import parameters
-import recruiting_config
+import sampling_config
 import sys
 from warnings import filterwarnings
 
@@ -77,20 +77,10 @@ def makeSample(user_data, criteria):
         warned = isWarned(u)
         if article_edits >= 10 and articles >= 2 and not warned:
             user_list.append({'username':u['name'], 'contribs':'https://en.wikipedia.org/wiki/Special:Contributions/' + u['name']})
-
-
-#         if '0' in u['activity']['counts']:
-#             if u['activity']['counts']['0'] > 20:
-# #         if u['activity']['counts'][0] > 20 and u['activity']['reverted'] < 5: 
-#                 user_list.append(u['name'])    
-    #work with other conditions while in dict form, then make it a list
-#     print user_list
-#     for u in user_data:
-#         user_list.append({u['name']})
     return user_list
             
 def getEmails(user_list, queries):
-    conn = MySQLdb.connect(host = recruiting_config.s1_host, db = "enwiki", read_default_file = recruiting_config.defaultcnf, use_unicode=1, charset="utf8")
+    conn = MySQLdb.connect(host = sampling_config.s1_host, db = "enwiki", read_default_file = sampling_config.defaultcnf, use_unicode=1, charset="utf8")
     cursor = conn.cursor()
     filterwarnings('ignore', category = MySQLdb.Warning)
     for u in user_list:
@@ -127,7 +117,7 @@ if __name__ == '__main__':
     paths = p.getPaths('curation tools newcomers')
 #     print paths
     
-    d = data.Download(paths['snuggle url'], paths['file path'])
+    d = data.Download(paths['api call'], paths['file path'])
     d.downloadData()
     raw_data = d.convertJSON()
 #     print raw_data

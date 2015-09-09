@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sampling_config
+
 class Params:
     """
     Params for retrieving a sample of newcomers for user study recruiting
@@ -42,9 +44,11 @@ class Params:
             
         self.paths = {
                 'curation tools newcomers' : {
-                    'file path' : '/home/jmorgan/snuggle_sampling/json/snuggle.json',
-                    'snuggle url' : 'http://snuggle-en.wmflabs.org/users/query/%7B%22sorted_by%22:%20%22registration%22,%20%22limit%22:%205000%7D',
-                    'output path' : '/home/jmorgan/snuggle_sampling/csv/',
+                    'file path' : sampling_config.download_path,
+                    'snuggle url' : sampling_config.snuggle_url,
+                    'sort field': '{"sorted_by":"registration",',
+                    'record limit': '"limit":5000}',
+                    'output path' : sampling_config.output_path,
                 },
             }   
 
@@ -58,6 +62,7 @@ class Params:
         
     def getPaths(self, sample_type):
         paths = self.paths[sample_type]
+        paths['api call'] = paths['snuggle url'] + paths['sort field'] + paths['record limit']
         return paths        
 
 

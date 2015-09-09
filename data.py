@@ -17,6 +17,7 @@
 
 import calendar
 import json
+import sampling_config
 import urllib2
 from datetime import datetime
 from datetime import timedelta
@@ -27,11 +28,10 @@ class Download:
     """
 
     def __init__(self, snuggle_url, file_path):
-#     def __init__(self, file_path):
 
         """define the API URL and the local file path"""
         print snuggle_url
-        proxy = urllib2.ProxyHandler({'http': 'webproxy.eqiad.wmnet:8080'})
+        proxy = urllib2.ProxyHandler({'http': sampling_config.web_proxy})
         opener = urllib2.build_opener(proxy)
         urllib2.install_opener(opener)
         self.data = urllib2.urlopen(snuggle_url)
