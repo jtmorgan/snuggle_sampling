@@ -1,0 +1,6 @@
+s1_host = 's1-analytics-slave.eqiad.wmnet'
+s6_host = 's6-analytics-slave.eqiad.wmnet'
+s1_user = 's1_db_username'
+s6_user = 's6_db_username'
+s1_defaultcnf = '/path/to/.s1.cnf'
+s6_defaultcnf = '/path/to/.s6.cnf'
