@@ -87,7 +87,6 @@ class Database:
     def getUserData(self, query_type, username): #need to call self?
         try:
             query = self.queries[query_type] % username
-#             print query
             self.cursor.execute(query)
             result = self.cursor.fetchone()
             user_data = result[0]

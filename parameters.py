@@ -31,15 +31,15 @@ class Params:
                 'from days ago' : 3,
                 'to days ago' : 7,
                 'days since edit' : 2,
-                'max reverts' : 5,
-                'max mobile edits' : 5,
+                'max reverts' : 2,
+                'max mobile edits' : 2,
                 'skip templates' : ['sock', 'warning', 'block',],
                 },                                  
             }            
         self.queries = {
             'curation tools newcomers' : {
                 'email' : 'select user_email from enwiki.user where user_name = "%s";',
-                'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%mobile edit%";'
+                'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%%mobile edit%%";'
                 },
             }
             
