@@ -25,20 +25,21 @@ class Params:
     def __init__(self):
         self.criteria = {
             'curation tools newcomers' : {
-                'article edits' : 10,
-                'articles edited' : 3,
+                'article edits' : 5,
+                'articles edited' : 2,
                 'min desirability ratio' : 4.0,
                 'from days ago' : 3,
                 'to days ago' : 7,
                 'days since edit' : 2,
                 'max reverts' : 5,
+                'max mobile edits' : 5,
                 'skip templates' : ['sock', 'warning', 'block',],
                 },                                  
-            }
-            
+            }            
         self.queries = {
             'curation tools newcomers' : {
                 'email' : 'select user_email from enwiki.user where user_name = "%s";',
+                'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%mobile edit%";'
                 },
             }
             

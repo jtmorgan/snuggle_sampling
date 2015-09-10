@@ -17,10 +17,14 @@
 
 import calendar
 import json
+import MySQLdb
+import parameters
 import sampling_config
 import urllib2
 from datetime import datetime
 from datetime import timedelta
+from warnings import filterwarnings
+
 
 class Download:
     """
@@ -30,7 +34,7 @@ class Download:
     def __init__(self, snuggle_url, file_path):
 
         """define the API URL and the local file path"""
-        print snuggle_url
+#         print snuggle_url
         proxy = urllib2.ProxyHandler({'http': sampling_config.web_proxy})
         opener = urllib2.build_opener(proxy)
         urllib2.install_opener(opener)
@@ -54,9 +58,9 @@ class Download:
     def filterDataByDate(self, sample_datetime, days_from, days_to, days_ago, raw_data):
         """filter items by date"""
         date_from = sample_datetime-timedelta(days=days_from)
-        print date_from
+#         print date_from
         date_to = sample_datetime-timedelta(days=days_to)
-        print date_to
+#         print date_to
         date_ago = sample_datetime-timedelta(days=days_ago)
         df_unix = calendar.timegm(date_from.timetuple()) #merge
         dt_unix = calendar.timegm(date_to.timetuple()) #merge
@@ -66,7 +70,33 @@ class Download:
         
         return filtered_data
 
-
+class Database:
+    """
+    Database access params
+    """
+    def __init__(self, sample_type):
+        """
+        Connect to the Database and create queries object for a sample
+        """
+        self.params = parameters.Params()
+        self.queries = self.params.getQueries(sample_type) #need self?        
+        self.conn = MySQLdb.connect(host = sampling_config.s1_host, db = "enwiki", read_default_file = sampling_config.defaultcnf, use_unicode=1, charset="utf8")
+        self.cursor = self.conn.cursor()
+        filterwarnings('ignore', category = MySQLdb.Warning)
+    
+    def getUserData(self, query_type, username): #need to call self?
+        try:
+            query = self.queries[query_type] % username
+#             print query
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+            user_data = result[0]
+        except TypeError:
+            user_data = ''    
+        return user_data
+        
+#    def commitUserData(self, username):    
+         
         
         
         

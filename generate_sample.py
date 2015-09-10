@@ -68,32 +68,39 @@ def isWarned(u):
     return warned                            
         
 def makeSample(user_data, criteria):
-
-    user_data = [x for x in user_data if x['desirability']['ratio'] >= criteria['min desirability ratio']] 
+    #if desirability ratio is working, use it. if not, don't.
+    user_data = [x for x in user_data if x['desirability']['ratio'] > criteria['min desirability ratio']] 
     user_list = []    
     for u in user_data:
-        article_edits = countArticleEdits(u)
-        articles = countArticles(u)
-        warned = isWarned(u)
-        if article_edits >= 10 and articles >= 2 and not warned:
-            user_list.append({'username':u['name'], 'contribs':'https://en.wikipedia.org/wiki/Special:Contributions/' + u['name']})
+        try:
+            article_edits = countArticleEdits(u)
+            articles = countArticles(u)
+            warned = isWarned(u)
+            if article_edits >= 10 and articles >= 2 and not warned:
+                    user_list.append({'username':u['name'], 'contribs':'https://en.wikipedia.org/wiki/Special:Contributions/' + u['name']})
+#             print u['desirability']['ratio']        
+        except:
+            pass
+#     print user_list        
     return user_list
             
-def getEmails(user_list, queries):
-    conn = MySQLdb.connect(host = sampling_config.s1_host, db = "enwiki", read_default_file = sampling_config.defaultcnf, use_unicode=1, charset="utf8")
-    cursor = conn.cursor()
-    filterwarnings('ignore', category = MySQLdb.Warning)
+def getEmails(user_list, db):
+#     conn = MySQLdb.connect(host = sampling_config.s1_host, db = "enwiki", read_default_file = sampling_config.defaultcnf, use_unicode=1, charset="utf8")
+#     cursor = conn.cursor()
+#     filterwarnings('ignore', category = MySQLdb.Warning)
     for u in user_list:
-        try:
-            q = queries['email'] % u['username']
-            cursor.execute(q)
-            row = cursor.fetchone()
-            u['email'] = row[0]            
-        except TypeError:
-            u['email'] = ''
-    cursor.close()
-    conn.close()
-    return user_list    
+#         try:
+#             q = queries['email'] % u['username']
+#             cursor.execute(q)
+#             row = cursor.fetchone()
+        email = db.getUserData('email', u['username'])
+        u['email'] = email            
+#         except TypeError:
+#             u['email'] = ''
+#     cursor.close()
+#     conn.close()
+    user_list_emails = [x for x in user_list if len(x['email']) > 0]
+    return user_list_emails   
     
     
 def createSampleFile(user_list, sample_datetime):
@@ -113,13 +120,13 @@ if __name__ == '__main__':
     p = parameters.Params()
     criteria = p.getCriteria('curation tools newcomers') #pass in as sysarg
 #     print criteria
-    queries = p.getQueries('curation tools newcomers')
+#     queries = p.getQueries('curation tools newcomers')
     paths = p.getPaths('curation tools newcomers')
 #     print paths
-    
     d = data.Download(paths['api call'], paths['file path'])
     d.downloadData()
     raw_data = d.convertJSON()
+    db = data.Database('curation tools newcomers')
 #     print raw_data
 
 
@@ -130,13 +137,11 @@ if __name__ == '__main__':
 #     print sample_datetime
     filtered_user_data = d.filterDataByDate(sample_datetime, criteria['from days ago'], criteria['to days ago'], criteria['days since edit'], user_data)
 #     print filtered_user_data
-#     print filtered_user_data
     user_list = makeSample(filtered_user_data, criteria)
 #     print user_list
-    user_list = getEmails(user_list, queries)
-    user_list = [x for x in user_list if len(x['email']) > 0]
+    user_list = getEmails(user_list, db)
 #     print len(user_list)
-#     print user_list
+    print user_list
 
     createSampleFile(user_list, sample_datetime)
 
