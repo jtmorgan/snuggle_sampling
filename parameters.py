@@ -25,14 +25,14 @@ class Params:
     def __init__(self):
         self.criteria = {
             'curation tools newcomers' : {
-                'article edits' : 5,
+                'content edits' : 5,
                 'articles edited' : 2,
                 'min desirability ratio' : 4.0,
-                'from days ago' : 3,
+                'from days ago' : 2,
                 'to days ago' : 7,
-                'days since edit' : 2,
-                'max reverts' : 2,
-                'max mobile edits' : 2,
+                'days since edit' : 3,
+                'max reverts' : 3,
+                'max mobile edits' : 0.5,
                 'skip templates' : ['sock', 'warning', 'block',],
                 },                                  
             }            

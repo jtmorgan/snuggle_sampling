@@ -79,18 +79,19 @@ class Database:
         Connect to the Database and create queries object for a sample
         """
         self.params = parameters.Params()
-        self.queries = self.params.getQueries(sample_type) #need self?        
+        self.queries = self.params.getQueries(sample_type)     
+        filterwarnings('ignore', category = MySQLdb.Warning)
         self.conn = MySQLdb.connect(host = sampling_config.s1_host, db = "enwiki", read_default_file = sampling_config.defaultcnf, use_unicode=1, charset="utf8")
         self.cursor = self.conn.cursor()
-        filterwarnings('ignore', category = MySQLdb.Warning)
+
     
-    def getUserData(self, query_type, username): #need to call self?
+    def getUserData(self, query_type, username):
+        query = self.queries[query_type] % username
         try:
-            query = self.queries[query_type] % username
             self.cursor.execute(query)
             result = self.cursor.fetchone()
             user_data = result[0]
-        except TypeError:
+        except (TypeError, MySQLdb.ProgrammingError):
             user_data = ''    
         return user_data
         
