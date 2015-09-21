@@ -25,12 +25,12 @@ class Params:
     def __init__(self):
         self.criteria = {
             'curation tools newcomers' : {
-                'content edits' : 5,
+                'content edits' : 10,
                 'articles edited' : 2,
                 'min desirability ratio' : 4.0,
-                'from days ago' : 2,
-                'to days ago' : 7,
-                'days since edit' : 3,
+                'from days ago' : 3,
+                'to days ago' : 14,
+                'days since edit' : 2,
                 'max reverts' : 3,
                 'max mobile edits' : 0.5,
                 'skip templates' : ['sock', 'warning', 'block',],
@@ -48,7 +48,7 @@ class Params:
                     'file path' : sampling_config.download_path,
                     'snuggle url' : sampling_config.snuggle_url,
                     'sort field': '{"sorted_by":"registration",',
-                    'record limit': '"limit":5000}',
+                    'record limit': '"limit":10000}',
                     'output path' : sampling_config.output_path,
                 },
             }   
