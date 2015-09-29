@@ -34,10 +34,43 @@ class Params:
                 'max reverts' : 3,
                 'max mobile edits' : 0.5,
                 'skip templates' : ['sock', 'warning', 'block',],
-                },                                  
+                'file prefix' : 'curation_tools_',
+                }, 
+            'persona new editors desktop' : {
+                'content edits' : 5,
+                'articles edited' : 1,
+                'min desirability ratio' : 4.0,
+                'from days ago' : 3,
+                'to days ago' : 14,
+                'days since edit' : 2,
+                'max reverts' : 2,
+                'max mobile edits' : 0.5,
+                'skip templates' : ['sock', 'warning', 'block',],
+                'file prefix' : 'persona_desktop_',
+                }, 
+            'persona new editors mobile' : {
+                'content edits' : 5,
+                'articles edited' : 1,
+                'min desirability ratio' : 4.0,
+                'from days ago' : 3,
+                'to days ago' : 14,
+                'days since edit' : 2,
+                'max reverts' : 2,
+                'max mobile edits' : 0.5,
+                'skip templates' : ['sock', 'warning', 'block',],
+                'file prefix' : 'persona_mobile_',
+                },                                   
             }            
         self.queries = {
             'curation tools newcomers' : {
+                'email' : 'select user_email from enwiki.user where user_name = "%s";',
+                'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%%mobile edit%%";'
+                },
+            'persona new editors desktop' : {
+                'email' : 'select user_email from enwiki.user where user_name = "%s";',
+                'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%%mobile edit%%";'
+                },
+            'persona new editors mobile' : {
                 'email' : 'select user_email from enwiki.user where user_name = "%s";',
                 'mobile edits' : 'select count(rc_id) from tag_summary t join recentchanges r on ts_rc_id = rc_id where rc_user_text = "%s" and rc_namespace = 0 and t.ts_tags like "%%mobile edit%%";'
                 },
@@ -45,6 +78,20 @@ class Params:
             
         self.paths = {
                 'curation tools newcomers' : {
+                    'file path' : sampling_config.download_path,
+                    'snuggle url' : sampling_config.snuggle_url,
+                    'sort field': '{"sorted_by":"registration",',
+                    'record limit': '"limit":10000}',
+                    'output path' : sampling_config.output_path,
+                },
+                'persona new editors desktop' : {
+                    'file path' : sampling_config.download_path,
+                    'snuggle url' : sampling_config.snuggle_url,
+                    'sort field': '{"sorted_by":"registration",',
+                    'record limit': '"limit":10000}',
+                    'output path' : sampling_config.output_path,
+                },
+                'persona new editors mobile' : {
                     'file path' : sampling_config.download_path,
                     'snuggle url' : sampling_config.snuggle_url,
                     'sort field': '{"sorted_by":"registration",',

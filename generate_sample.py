@@ -79,8 +79,8 @@ def countMobileEdits(u, all_content_edits, criteria, db):
     elif mobile_edits > 0: 
         percent_mobile = float(mobile_edits) / all_content_edits
         if percent_mobile > criteria['max mobile edits']:
-#             print percent_mobile
-#             print u['name']
+            print percent_mobile
+            print u['name']
             mostly_mobile = True
     else:
         pass
@@ -111,8 +111,8 @@ def getEmails(user_list, db):
     return user_list_emails   
     
     
-def createSampleFile(user_list, sample_datetime):
-    filename = str(sample_datetime.strftime('%Y%m%d%H%M%S')) + ".csv" #use datetime instead?
+def createSampleFile(user_list, sample_datetime, filename_prefix):
+    filename = filename_prefix + str(sample_datetime.strftime('%Y%m%d%H%M%S')) + ".csv"
     path = paths['output path']
     with open(path + filename, 'w') as outfile:
         writer = csv.writer(outfile, quoting=csv.QUOTE_NONNUMERIC)
@@ -126,12 +126,12 @@ def createSampleFile(user_list, sample_datetime):
 
 if __name__ == '__main__':
     p = parameters.Params()
-    criteria = p.getCriteria('curation tools newcomers') #pass in as sysarg
-    paths = p.getPaths('curation tools newcomers')
+    criteria = p.getCriteria(sys.argv[1])
+    paths = p.getPaths(sys.argv[1])
     d = data.Download(paths['api call'], paths['file path'])
     d.downloadData()
     raw_data = d.convertJSON()
-    db = data.Database('curation tools newcomers')
+    db = data.Database(sys.argv[1])
 
     sample_unix_time = raw_data['meta']['time'] #extract POSIX
     sample_datetime = datetime.utcfromtimestamp(sample_unix_time) #datetime tuple from POSIX
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     filtered_user_data = d.filterDataByDate(sample_datetime, criteria['from days ago'], criteria['to days ago'], criteria['days since edit'], user_data)
     user_list = makeSample(filtered_user_data, criteria, db)
     user_list = getEmails(user_list, db)
-#     print user_list
+    print user_list
 
-    createSampleFile(user_list, sample_datetime)
+    createSampleFile(user_list, sample_datetime, criteria['file prefix'])
 
